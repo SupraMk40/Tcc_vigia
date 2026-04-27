@@ -2,118 +2,68 @@ import React, { useEffect, useState } from 'react';
 import { styles } from './style';
 
 import {
-    SafeAreaView,
-    Text,
     View,
     ScrollView,
     TouchableOpacity,
     Image,
-    ActivityIndicator,
     RefreshControl,
     StatusBar,
     Alert,
     TextInput,
-    Platform
+    Platform,
+    Text
 } from 'react-native';
-
-
 
 import { MaterialIcons } from '@expo/vector-icons';
 import Load from '../../components/Load';
 import { DrawerActions, useNavigation } from '@react-navigation/core';
 import api from '../../../services/api';
-import { AnimatedCircularProgress } from 'react-native-circular-progress';
-
 import { useIsFocused } from '@react-navigation/native';
-
-import {Ionicons} from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
+import AlertCard from '../../components/AlertCard';
 
 export default function Home() {
-    const navigation= useNavigation();
+    const navigation = useNavigation();
     const isFocused = useIsFocused();
 
     const [dados, setDados] = useState([]);
-    const [total, setTotal] = useState([]);
+    const [total, setTotal] = useState({});
     const [isLoading, setIsLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
 
     const [search, setSearch] = useState('');
     const [filteredDados, setFilteredDados] = useState([]);
-    const [sortAsc, setSortAsc] = useState(true);
-
-    //FUNÇÃO EDITAR E EXCLUIR
-  //importar para funcionar a exclusao
-  // Platform
-function editarItem(item) {
-    navigation.navigate("Cadastro", { id: item.id });
-}
-
-
-function excluirItem(id) {
-
-    if (Platform.OS === 'web') {
-
-        const confirmar = window.confirm("Deseja excluir este registro?");
-
-        if (confirmar) {
-            deletar(id);
-        }
-
-    } else {
-
-        Alert.alert(
-            "Excluir",
-            "Deseja excluir este registro?",
-            [
-                { text: "Cancelar" },
-                { text: "Excluir", onPress: () => deletar(id) }
-            ]
-        );
-
-    }
-
-}
-
-
-async function deletar(id) {
-
-    try {
-
-        await api.get(`PAMII/appBD/excluir.php?id=${id}`);
-
-        listarDados();
-        totalDadosCadastrados();
-
-    } catch (error) {
-        console.log(error);
-    }
-
-}
-
-
 
     async function totalDadosCadastrados() {
-
-        //MUDAR CAMINHO BD
-        const res = await api.get(`PAMII/APPBD/listar-cards.php`);
-        setTotal(res.data);
+        try {
+            const res = await api.get(`PAMII/APPBD/listar-cards.php`);
+            setTotal(res.data);
+        } catch (error) {
+            console.log(error);
+        }
     }
 
-     async function listarDados() {
-
-     try {
-            //MUDAR CAMINHO BD
+    async function listarDados() {
+        try {
             const res = await api.get(`PAMII/APPBD/buscar.php`);
-            setDados(res.data.result);
-         
-
-               } catch (error) {
-               console.log("Erro ao Listar " + error);
-           } finally {
-             setIsLoading(false);
-             setRefreshing(false);
-         }
-     }
+            const resultados = res.data.result || [];
+            const adaptados = resultados.map(item => ({
+                ...item,
+                titulo: item.titulo || item.cidade || 'Alerta sem título',
+                descricao: item.descricao || item.transporte || '',
+                categoria: item.categoria || 'ALERTA',
+                urgencia: item.urgencia || 'média',
+                localizacao: item.localizacao || `${item.cidade || ''}, ${item.estado || ''}`,
+                confirmacoes: item.confirmacoes || 0,
+            }));
+            setDados(adaptados);
+        } catch (error) {
+            console.log("Erro ao Listar " + error);
+        } finally {
+            setIsLoading(false);
+            setRefreshing(false);
+        }
+    }
 
     useEffect(() => {
         listarDados();
@@ -123,42 +73,68 @@ async function deletar(id) {
     const onRefresh = () => {
         setRefreshing(true);
         listarDados();
-
     };
 
-
-    //PARA BUSCA DE DADOS NA TABELA QUE MOSTRA OS DADOS DO BD
     useEffect(() => {
-    let lista = [...dados];
+        let lista = [...dados];
+        if (search !== '') {
+            lista = lista.filter(item =>
+                (item.titulo && item.titulo.toLowerCase().includes(search.toLowerCase())) ||
+                (item.descricao && item.descricao.toLowerCase().includes(search.toLowerCase())) ||
+                (item.localizacao && item.localizacao.toLowerCase().includes(search.toLowerCase())) ||
+                (item.categoria && item.categoria.toLowerCase().includes(search.toLowerCase()))
+            );
+        }
+        setFilteredDados(lista);
+    }, [search, dados]);
 
-    // Busca
-    if (search !== '') {
-        lista = lista.filter(item =>
-            //COLOCAR AQUI OS NOMES DOS STATES QUE SERÃO BUSCADOS NA TABELA 
-            item.cidade.toLowerCase().includes(search.toLowerCase()) ||
-            item.estado.toLowerCase().includes(search.toLowerCase())
-        );
+    function handleConfirmar(item) {
+        Alert.alert('Confirmar', 'Você confirma essa ocorrência? Outros moradores serão notificados.');
     }
 
-    setFilteredDados(lista);
-}, [search, dados]);
+    function handleComentar(item) {
+        navigation.navigate('AlertaDetalhe', { item });
+    }
 
-//FUNÇÃO PARA ORDENAR OS DADOS TABELA QUE MOSTRA OS DADOS DO BD
-function ordenarPorCidade() {
-    let lista = [...filteredDados];
+    function handleCompartilhar(item) {
+        Alert.alert('Repostar', 'Deseja repostar este alerta para a vizinhança?');
+    }
 
-    lista.sort((a, b) => {
-        if (sortAsc) {
-            //COLOQUE AQUU O STATE QUE SERÁ ORDENADO NA TABELA
-            return a.cidade.localeCompare(b.cidade);
+    function handlePressCard(item) {
+        navigation.navigate('AlertaDetalhe', { item });
+    }
+
+    function editarItem(item) {
+        navigation.navigate("Cadastro", { id: item.id });
+    }
+
+    function excluirItem(id) {
+        if (Platform.OS === 'web') {
+            const confirmar = window.confirm("Deseja excluir este alerta?");
+            if (confirmar) {
+                deletar(id);
+            }
         } else {
-            return b.cidade.localeCompare(a.cidade);
+            Alert.alert(
+                "Excluir",
+                "Deseja excluir este alerta?",
+                [
+                    { text: "Cancelar" },
+                    { text: "Excluir", onPress: () => deletar(id) }
+                ]
+            );
         }
-    });
+    }
 
-    setFilteredDados(lista);
-    setSortAsc(!sortAsc);
-}
+    async function deletar(id) {
+        try {
+            await api.get(`PAMII/appBD/excluir.php?id=${id}`);
+            listarDados();
+            totalDadosCadastrados();
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     return (
         <View style={{ flex: 1 }}>
@@ -166,20 +142,15 @@ function ordenarPorCidade() {
             <View style={{ flex: 1 }}>
                 <View style={styles.header}>
                     <View style={styles.containerHeader}>
-
                         <TouchableOpacity
                             style={styles.menu}
                             onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
                         >
                             <MaterialIcons name="menu" size={35} color="black" />
                         </TouchableOpacity>
-                         {/* NOME DA IMAGEM DA TELA HOME */}
                         <Image style={styles.logo} source={require('../../../assets/logo2.png')} />
-
                     </View>
                 </View>
-
-
 
                 {isLoading ?
                     <Load /> :
@@ -195,139 +166,62 @@ function ordenarPorCidade() {
                             />
                         }
                     >
+                        <View style={{ padding: 12 }}>
+                            <Text style={styles.feedTitle}>Feed da Comunidade</Text>
+                            <TextInput
+                                placeholder="Buscar alertas, localizações ou categorias..."
+                                value={search}
+                                onChangeText={setSearch}
+                                style={styles.searchInput}
+                            />
+                        </View>
 
-                        <View style={styles.circleProgressView}>
-                            <View style={styles.textProgressContainer}>
-                                <Text style={styles.textProgressTitle}>Tarefas de Hoje</Text>
-                          
+                        <View style={styles.feedSection}>
+                            <View style={styles.feedHeader}>
+                                <Text style={styles.feedSectionTitle}>Últimos Alertas</Text>
+                                <TouchableOpacity onPress={() => navigation.navigate("Cadastro")}>
+                                    <Text style={styles.feedHeaderLink}>Novo Alerta</Text>
+                                </TouchableOpacity>
                             </View>
 
-                            <AnimatedCircularProgress
-                                size={80}
-                                width={8}
-                                fill={50}
-                                tintColor="#00e0ff"
-                                backgroundColor="#e0e0e0"
-                                lineCap={"round"}
-                            >
-                                {
-                                    (fill) => (
-                                        <Text style={styles.numberInside}>50%</Text>
-                                    )
-                                }
-                            </AnimatedCircularProgress>
-                        </View>
-
-<View style={styles.containerBox}>
-
-                            {/* COLOCAR O NOME DA TELA QUE SERÁ CHAMADO AO CLICAR EM TAREFAS */}
-                            <TouchableOpacity onPress={() => navigation.navigate("Cadastro")}>
-                                <View>
-                                    <View style={styles.box}>
-                                        <MaterialIcons style={styles.iconRegistered} name="lock-clock" size={70} color="#b82d" />
-                                        <View style={styles.textos}>
-                                            <Text style={styles.rText}>Total de Registros</Text>
-                                         <Text style={styles.lenghtText}>{total.total_usuarios}</Text>  
-                                        </View>
-                                    </View>
-                                    <Text style={styles.textFooter}>Dados Cadastrados</Text>
-                                    
+                            {filteredDados.length === 0 && (
+                                <View style={styles.emptyFeedBox}>
+                                    <Ionicons name="alert-circle-outline" size={40} color="#c1c1c1" />
+                                    <Text style={styles.emptyFeed}>Nenhum alerta encontrado. Seja o primeiro a reportar!</Text>
                                 </View>
-                            </TouchableOpacity>
+                            )}
 
-                        </View>
-
-                        <View style={styles.containerBox}>
-
-                            {/* COLOCAR O NOME DA TELA QUE SERÁ CHAMADO AO CLICAR EM TAREFAS */}
-                            <TouchableOpacity onPress={() => navigation.navigate("Cadastro")}>
-                                <View>
-                                    <View style={styles.box}>
-                                        <MaterialIcons style={styles.iconRegistered} name="lock-clock" size={70} color="#b82d" />
-                                        <View style={styles.textos}>
-                                            <Text style={styles.rText}>Total de Registros</Text>
-                                         <Text style={styles.lenghtText}>{total.total_usuarios}</Text>  
-                                        </View>
+                            {filteredDados.map((item) => (
+                                <View key={item.id}>
+                                    <AlertCard
+                                        item={item}
+                                        onConfirm={handleConfirmar}
+                                        onComment={handleComentar}
+                                        onShare={handleCompartilhar}
+                                        onPress={handlePressCard}
+                                    />
+                                    <View style={styles.adminActions}>
+                                        <TouchableOpacity onPress={() => editarItem(item)}>
+                                            <Ionicons name="create" size={18} color="blue" />
+                                        </TouchableOpacity>
+                                        <TouchableOpacity onPress={() => excluirItem(item.id)}>
+                                            <Ionicons name="trash" size={18} color="red" />
+                                        </TouchableOpacity>
                                     </View>
-                                    <Text style={styles.textFooter}>Dados Cadastrados</Text>
-                                    
                                 </View>
-                            </TouchableOpacity>
-
+                            ))}
                         </View>
+                    </ScrollView>
+                }
 
-  <View style={{ padding: 10 }}>
-    <TextInput
-        placeholder="Buscar cidade ou estado..."
-        value={search}
-        onChangeText={setSearch}
-        style={{
-            borderWidth: 1,
-            borderColor: '#ccc',
-            padding: 8,
-            borderRadius: 5
-        }}
-    />
-</View>
-<ScrollView horizontal showsHorizontalScrollIndicator={false}>
-  
-  <View>
-    
-    {/* Cabeçalho */}
-  <View style={styles.tableHeader}>
-    <Text style={styles.headerCell}>ID</Text>
-
-    <TouchableOpacity onPress={ordenarPorCidade}>
-        <Text style={styles.headerCell}>Cidade ▲▼</Text>
-    </TouchableOpacity>
-
-    <Text style={styles.headerCell}>Estado</Text>
-    <Text style={styles.headerCell}>Ações</Text>
-</View>
-
-    {/* Linhas */}
-    {filteredDados.map((item, index) => (
-    <View
-        key={item.id}
-        style={[
-            styles.griditem,
-            index % 2 === 0 ? styles.rowEven : styles.rowOdd
-        ]}
-    >
-
-        {/* COLOQUE OS STATES QUE SERÃO MOSTRADOS NA TABELA AO LISTAR DO BD */}
-        <Text style={styles.cell}>{item.id}</Text>
-        <Text style={styles.cell}>{item.cidade}</Text>
-        <Text style={styles.cell}>{item.estado}</Text>
-
-                <View style={styles.actions}>
-            <TouchableOpacity onPress={() => editarItem(item)}>
-                <Ionicons name="create" size={20} color="blue" />
-            </TouchableOpacity>
-
-            <TouchableOpacity onPress={() => excluirItem(item.id)}>
-                <Ionicons name="trash" size={20} color="red" />
-            </TouchableOpacity>
+                <TouchableOpacity
+                    style={styles.fab}
+                    onPress={() => navigation.navigate("Cadastro")}
+                >
+                    <Ionicons name="add" size={28} color="#fff" />
+                </TouchableOpacity>
+            </View>
         </View>
-
-
-
-    </View>
-))}
-
-  </View>
-
-</ScrollView>
-                       
-</ScrollView>
+    );
 }
-</View>
-</View>
 
-
-
-            
-
-
-    )
-}
