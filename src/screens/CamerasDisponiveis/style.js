@@ -1,72 +1,80 @@
 import { StyleSheet } from 'react-native';
-import colors from '../../styles/colors';
 import fonts from '../../styles/fonts';
 
 export const styles = StyleSheet.create({
-    header: {
-        backgroundColor: '#fafafa',
-        shadowColor: 'rgba(0, 0, 0, 0.1)',
-        shadowOpacity: 0.1,
-        elevation: 6,
-        shadowRadius: 15,
-        shadowOffset: { width: 1, height: 5 },
-        borderBottomRightRadius: 5,
-        borderBottomLeftRadius: 5,
-        height: 55,
-    },
-    containerHeader: {
+    Header: {
         flexDirection: 'row',
-        justifyContent: 'center',
         alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingHorizontal: 10,
+        paddingTop: 45,
+        paddingBottom: 10,
+        backgroundColor: '#fff',
+        borderBottomWidth: 1,
+        borderBottomColor: '#e8eaed',
     },
-    menu: {
+    logo: {
+        width: 160,
+        height: 40,
+    },
+    Title: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginVertical: 18,
+        gap: 10,
+    },
+    TitleText: {
+        fontSize: 22,
+        color: '#202124',
+        fontWeight: 'bold',
+    },
+    carouselContainer: {
+        flex: 1,
+        paddingHorizontal: 16,
+    },
+    carousel: {
+        flex: 1,
+    },
+    carouselItem: {
+        width: '100%',
+        height: 250,
+        marginRight: 16,
+        borderRadius: 12,
+        overflow: 'hidden',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 8,
+        elevation: 5,
+    },
+    carouselImage: {
+        width: '100%',
+        height: '100%',
+    },
+    carouselOverlay: {
         position: 'absolute',
-        left: 20,
-        alignSelf: 'center',
-        top: 10,
+        bottom: 16,
+        left: 16,
+        right: 16,
+        backgroundColor: 'rgba(0,0,0,0.4)',
+        padding: 12,
+        borderRadius: 8,
     },
-    pageTitle: {
+    carouselTitle: {
+        color: '#fff',
         fontSize: 18,
         fontWeight: 'bold',
-        color: '#202124',
-        fontFamily: fonts.text,
-        marginTop: 12,
     },
-    searchInput: {
-        borderWidth: 1,
-        borderColor: '#dadce0',
-        padding: 10,
-        borderRadius: 8,
-        backgroundColor: '#fff',
-        fontSize: 14,
-        fontFamily: fonts.text,
-    },
-    feedSection: {
-        paddingHorizontal: 14,
-        marginTop: 10,
-        marginBottom: 20,
-    },
-    feedHeader: {
+    dotsContainer: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 10,
+        justifyContent: 'center',
+        marginTop: 16,
+        gap: 8,
     },
-    feedSectionTitle: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        color: '#202124',
-        fontFamily: fonts.text,
-    },
-    emptyBox: {
-        alignItems: 'center',
-        paddingVertical: 40,
-    },
-    emptyText: {
-        textAlign: 'center',
-        color: '#80868b',
-        fontFamily: fonts.text,
-        fontSize: 14,
-        marginTop: 10,
+    dot: {
+        width: 10,
+        height: 10,
+        borderRadius: 5,
     },
 });

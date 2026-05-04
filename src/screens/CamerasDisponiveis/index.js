@@ -1,118 +1,65 @@
-import React, { useEffect, useState } from 'react';
-import { View, ScrollView, TextInput, RefreshControl, StatusBar, Text } from 'react-native';
+import React, { useState } from 'react';
+import { View, FlatList, Image, Dimensions, Text, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
-import { useIsFocused } from '@react-navigation/native';
-import { DrawerActions, useNavigation } from '@react-navigation/core';
-import Load from '../../components/Load';
-import AlertCard from '../../components/AlertCard';
 import { styles } from './style';
-import api from '../../../services/api';
 
-export default function CamerasDisponiveis() {
-    const navigation = useNavigation();
-    const isFocused = useIsFocused();
+const { width } = Dimensions.get('window');
+const carouselData = [
+  { id: '1', image: 'https://www.google.com/imgres?q=carousel%20card%20css&imgurl=https%3A%2F%2Fwww.jqueryscript.net%2Fimages%2FSmooth-Card-Carousel-jQuery-CSS3.jpg&imgrefurl=https%3A%2F%2Fwww.jqueryscript.net%2Fslider%2FSmooth-Card-Carousel-jQuery-CSS3.html&docid=C8FE5v7pg4UzSM&tbnid=nKFzat6WVe9lsM&vet=12ahUKEwidvuPI9J-UAxXbQ7gEHY1oCToQnPAOegQIFBAB..i&w=620&h=457&hcb=2&ved=2ahUKEwidvuPI9J-UAxXbQ7gEHY1oCToQnPAOegQIFBAB', title: 'Câmera 1' },
+  { id: '2', image: 'https://www.google.com/imgres?q=carousel%20card%20css&imgurl=https%3A%2F%2Fwww.codingnepalweb.com%2Fwp-content%2Fuploads%2F2024%2F07%2FHow-to-Create-Responsive-Card-Slider-in-HTML-CSS-JavaScript.jpg&imgrefurl=https%3A%2F%2Fwww.codingnepalweb.com%2Fcreate-responsive-card-slider-html-javascript%2F&docid=S3bQ47Jaa2NDrM&tbnid=B88oR0SJjvPk8M&vet=12ahUKEwidvuPI9J-UAxXbQ7gEHY1oCToQnPAOegQIERAB..i&w=1280&h=720&hcb=2&ved=2ahUKEwidvuPI9J-UAxXbQ7gEHY1oCToQnPAOegQIERAB', title: 'Câmera 2' },
+  { id: '3', image: 'https://www.google.com/imgres?q=carousel%20card%20css&imgurl=https%3A%2F%2Fwww.codewithrandom.com%2Fwp-content%2Fuploads%2F2022%2F11%2F15-Bootstrap-login-forms49.png&imgrefurl=https%3A%2F%2Fwww.codewithrandom.com%2F2024%2F05%2F06%2Fcarousel-using-css%2F&docid=c2w7S6K1RtWtRM&tbnid=o4Dcn5Xq9C8f2M&vet=12ahUKEwidvuPI9J-UAxXbQ7gEHY1oCToQnPAOegQIEhAB..i&w=1200&h=628&hcb=2&ved=2ahUKEwidvuPI9J-UAxXbQ7gEHY1oCToQnPAOegQIEhAB', title: 'Câmera 3' },
+];
 
-    const [cameras, setCameras] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [refreshing, setRefreshing] = useState(false);
-    const [search, setSearch] = useState('');
-    const [filteredCameras, setFilteredCameras] = useState([]);
+const CamerasDisponiveis = () => {
+  const navigation = useNavigation();
+  const [activeIndex, setActiveIndex] = useState(0);
 
-    async function listarCameras() {
-        try {
-            // Placeholder - ajustar endpoint conforme API
-            const res = await api.get('PAMII/APPBD/listar-cameras.php'); 
-            const resultados = res.data.result || [];
-            const adaptados = resultados.map(item => ({
-                ...item,
-                titulo: item.nome || item.local || 'Câmera sem nome',
-                descricao: item.descricao || 'Câmera disponível',
-                localizacao: item.endereco || item.local || '',
-            }));
-            setCameras(adaptados);
-        } catch (error) {
-            console.log('Erro ao listar câmeras:', error);
-            setCameras([]);
-        } finally {
-            setIsLoading(false);
-            setRefreshing(false);
-        }
-    }
+  const renderCamera = ({ item, index }) => (
+    <View style={styles.carouselItem}>
+      <Image source={{ uri: item.image }} style={styles.carouselImage} resizeMode="cover" />
+      <View style={styles.carouselOverlay}>
+        <Text style={styles.carouselTitle}>{item.title}</Text>
+      </View>
+    </View>
+  );
 
-    useEffect(() => {
-        listarCameras();
-    }, [isFocused]);
+  const onScroll = (event) => {
+    const index = Math.round(event.nativeEvent.contentOffset.x / width);
+    setActiveIndex(index);
+  };
 
-    const onRefresh = () => {
-        setRefreshing(true);
-        listarCameras();
-    };
-
-    useEffect(() => {
-        let lista = [...cameras];
-        if (search) {
-            lista = lista.filter(item =>
-                item.titulo.toLowerCase().includes(search.toLowerCase()) ||
-                item.descricao.toLowerCase().includes(search.toLowerCase()) ||
-                (item.localizacao || '').toLowerCase().includes(search.toLowerCase())
-            );
-        }
-        setFilteredCameras(lista);
-    }, [search, cameras]);
-
-    if (isLoading) return <Load />;
-
-    return (
-        <View style={{ flex: 1 }}>
-            <StatusBar barStyle="light-content" />
-            <View style={styles.header}>
-                <View style={styles.containerHeader}>
-                    <TouchableOpacity
-                        style={styles.menu}
-                        onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
-                    >
-                        <Ionicons name="menu" size={35} color="black" />
-                    </TouchableOpacity>
-                    <Text style={styles.pageTitle}>Câmeras Disponíveis</Text>
-                </View>
-            </View>
-
-            <ScrollView
-                style={{ flex: 1 }}
-                refreshControl={
-                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-                }
-            >
-                <View style={{ padding: 12 }}>
-                    <TextInput
-                        placeholder="Buscar câmeras por nome ou localização..."
-                        value={search}
-                        onChangeText={setSearch}
-                        style={styles.searchInput}
-                    />
-                </View>
-
-                <View style={styles.feedSection}>
-                    <View style={styles.feedHeader}>
-                        <Text style={styles.feedSectionTitle}>Câmeras na Vizinhança</Text>
-                    </View>
-
-                    {filteredCameras.length === 0 ? (
-                        <View style={styles.emptyBox}>
-                            <Ionicons name="camera-outline" size={40} color="#c1c1c1" />
-                            <Text style={styles.emptyText}>Nenhuma câmera encontrada</Text>
-                        </View>
-                    ) : (
-                        filteredCameras.map((item) => (
-                            <AlertCard
-                                key={item.id}
-                                item={item}
-                                onPress={() => console.log('Ver câmera:', item.id)}
-                            />
-                        ))
-                    )}
-                </View>
-            </ScrollView>
+  return (
+    <View style={{ flex: 1, backgroundColor: '#f8f9fa' }}>
+      <View style={styles.Header}>
+        <Image style={styles.logo} source={require('../../../assets/logo2.png')} />
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Ionicons name="caret-back-outline" size={35} color="#202124" />
+        </TouchableOpacity>
+      </View>
+      <View style={styles.Title}>
+        <Ionicons name="videocam-outline" size={35} color="#1a73e8" />
+        <Text style={styles.TitleText}>Câmeras Disponíveis</Text>
+      </View>
+      <View style={styles.carouselContainer}>
+        <FlatList
+          data={carouselData}
+          renderItem={renderCamera}
+          keyExtractor={(item) => item.id}
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          onScroll={onScroll}
+          style={styles.carousel}
+        />
+        <View style={styles.dotsContainer}>
+          {carouselData.map((_, index) => (
+            <View key={index} style={[styles.dot, { backgroundColor: index === activeIndex ? '#1a73e8' : '#dadce0' }]} />
+          ))}
         </View>
-    );
-}
+      </View>
+    </View>
+  );
+};
+
+export default CamerasDisponiveis;
