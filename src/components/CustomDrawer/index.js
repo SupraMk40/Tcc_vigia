@@ -43,7 +43,7 @@ const CustomDrawer = () => {
                     <TouchableOpacity
                         style={styles.Pages}
                         onPress={() => {
-                            navigation.navigate("Cadastro");
+                            navigation.navigate("CamerasDisponiveis");
                             navigation.dispatch(DrawerActions.closeDrawer());
                         }}
                     >
@@ -82,17 +82,6 @@ const CustomDrawer = () => {
                     >
                         <MaterialIcons style={styles.iconRegistered} name="camera-alt" size={30} color="gray" />
                         <Text style={styles.PagesText}>Minhas Câmeras</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                        style={styles.Pages}
-                        onPress={() => {
-                            navigation.navigate('Imagens');
-                            navigation.dispatch(DrawerActions.closeDrawer());
-                        }}
-                    >
-                        <Entypo style={styles.iconRegistered} name="images" size={26} color="gray" />
-                        <Text style={styles.PagesText}>Imagens</Text>
                     </TouchableOpacity>
                 </View>
             </ScrollView>

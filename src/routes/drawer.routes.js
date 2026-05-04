@@ -6,8 +6,8 @@ import CustomDrawer from '../components/CustomDrawer';
 import Login from '../screens/Login';
 import Home from '../screens/Home';
 import Cadastro from '../screens/Cadastro';
-import Imagens from '../screens/Imagens';
 import AlertaDetalhe from '../screens/AlertaDetalhe';
+import CamerasDisponiveis from '../screens/CamerasDisponiveis';
 
 const DrawerRoutes = () => {
     const Drawer = createDrawerNavigator();
@@ -28,7 +28,7 @@ const DrawerRoutes = () => {
         >
             <Drawer.Screen name="Home" component={Home} />
             <Drawer.Screen name="Cadastro" component={Cadastro} />
-            <Drawer.Screen name="Imagens" component={Imagens} />
+            <Drawer.Screen name="CamerasDisponiveis" component={CamerasDisponiveis} />
             <Drawer.Screen name="Login" component={Login} />
         </Drawer.Navigator>
     );
