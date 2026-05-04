@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, Alert, Text, TextInput, View, TouchableOpacity, Image } from 'react-native';
+import { ScrollView, Alert, Text, TextInput, View, TouchableOpacity, Image, StyleSheet,} from 'react-native';
 import { useNavigation } from '@react-navigation/core';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker';
 import { styles } from './style';
 import { showMessage } from "react-native-flash-message";
 import api from '../../../services/api';
@@ -17,6 +18,7 @@ const Cadastro = () => {
     const [categoria, setCategoria] = useState('ALERTA');
     const [urgencia, setUrgencia] = useState('média');
     const [localizacao, setLocalizacao] = useState('');
+    const [image, setImage] = useState(null);
 
     const [sucess, setSucess] = useState(false);
 
@@ -144,6 +146,57 @@ const Cadastro = () => {
         }
     }
 
+    async function pickImageFromGallery() {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+        });
+
+        if (!result.canceled) {
+            console.log(result);
+            setImage(result.assets[0].uri);
+        }
+    }
+
+    async function takePhoto() {
+        let result = await ImagePicker.launchCameraAsync({
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+        });
+
+        if (!result.canceled) {
+            console.log(result);
+            setImage(result.assets[0].uri);
+        }
+    }
+
+    async function uploadImage() {
+        if (!image) return;
+
+        try {
+            const responseImage = await fetch(image);
+            const blob = await responseImage.blob();
+
+            const formData = new FormData();
+            formData.append('photo', blob, 'foto.png');
+
+            const response = await fetch("http://localhost:81/PAMII/imagem/upload.php", {
+                method: 'POST',
+                body: formData,
+            });
+
+            const result = await response.text();
+            console.log("Resposta do PHP:", result);
+            Alert.alert("Servidor respondeu", result);
+        } catch (error) {
+            console.error("Erro detalhado:", error);
+            Alert.alert("Erro de Conexão", "O servidor recusou a requisição ou está offline.");
+        }
+    }
+
     const categorias = ['ALERTA', 'ATENÇÃO', 'SEGURO'];
     const urgencias = ['baixa', 'média', 'alta'];
 
@@ -181,6 +234,29 @@ const Cadastro = () => {
                         style={[styles.TextInput, { height: 80, textAlignVertical: 'top' }]}
                         multiline
                     />
+                </View>
+
+                <View>
+                    <Text style={styles.TitleInputs}>Inserir imagens ou videos:</Text>
+                    <View style={{ flexDirection: 'row', gap: 10, marginBottom: 10 }}>
+                        <TouchableOpacity style={[styles.chip, { flex: 1, backgroundColor: '#1e90ff' }]} onPress={pickImageFromGallery}>
+                            <Ionicons name="image" size={20} color="white" />
+                            <Text style={[styles.chipText, { color: 'white' }]}>Galeria</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={[styles.chip, { flex: 1, backgroundColor: '#1e90ff' }]} onPress={takePhoto}>
+                            <Ionicons name="camera" size={20} color="white" />
+                            <Text style={[styles.chipText, { color: 'white' }]}>Câmera</Text>
+                        </TouchableOpacity>
+                    </View>
+                    {image && (
+                        <Image source={{ uri: image }} style={{ width: '100%', height: 200, borderRadius: 10, marginBottom: 10, backgroundColor: '#ccc' }} />
+                    )}
+                    {image && (
+                        <TouchableOpacity style={[styles.Button, { backgroundColor: '#1e90ff' }]} onPress={uploadImage}>
+                            <Ionicons name="cloud-upload" size={20} color="white" />
+                            <Text style={styles.ButtonText}>Enviar Imagem</Text>
+                        </TouchableOpacity>
+                    )}
                 </View>
 
                 <View>
