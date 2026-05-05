@@ -6,183 +6,57 @@ import { styles } from './style';
 
 const { width } = Dimensions.get('window');
 const carouselData = [
-  {
-    id: '1',
-    image: 'https://images.unsplash.com/photo-1557597774-9d273605dfa9?w=800&q=80',
-    title: 'Câmera 1',
-    location: 'Entrada Principal',
-    status: 'online',
-    resolution: '1080p',
-  },
-  {
-    id: '2',
-    image: 'https://images.unsplash.com/photo-1590487988256-9ed24133863e?w=800&q=80',
-    title: 'Câmera 2',
-    location: 'Estacionamento',
-    status: 'online',
-    resolution: '4K',
-  },
-  {
-    id: '3',
-    image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80',
-    title: 'Câmera 3',
-    location: 'Corredor B',
-    status: 'offline',
-    resolution: '720p',
-  },
-  {
-    id: '4',
-    image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80',
-    title: 'Câmera 4',
-    location: 'Sala de Reuniões',
-    status: 'online',
-    resolution: '1080p',
-  },
+  { id: '1', image: 'https://www.google.com/imgres?q=carousel%20card%20css&imgurl=https%3A%2F%2Fwww.jqueryscript.net%2Fimages%2FSmooth-Card-Carousel-jQuery-CSS3.jpg&imgrefurl=https%3A%2F%2Fwww.jqueryscript.net%2Fslider%2FSmooth-Card-Carousel-jQuery-CSS3.html&docid=C8FE5v7pg4UzSM&tbnid=nKFzat6WVe9lsM&vet=12ahUKEwidvuPI9J-UAxXbQ7gEHY1oCToQnPAOegQIFBAB..i&w=620&h=457&hcb=2&ved=2ahUKEwidvuPI9J-UAxXbQ7gEHY1oCToQnPAOegQIFBAB', title: 'Câmera 1' },
+  { id: '2', image: 'https://www.google.com/imgres?q=carousel%20card%20css&imgurl=https%3A%2F%2Fwww.codingnepalweb.com%2Fwp-content%2Fuploads%2F2024%2F07%2FHow-to-Create-Responsive-Card-Slider-in-HTML-CSS-JavaScript.jpg&imgrefurl=https%3A%2F%2Fwww.codingnepalweb.com%2Fcreate-responsive-card-slider-html-javascript%2F&docid=S3bQ47Jaa2NDrM&tbnid=B88oR0SJjvPk8M&vet=12ahUKEwidvuPI9J-UAxXbQ7gEHY1oCToQnPAOegQIERAB..i&w=1280&h=720&hcb=2&ved=2ahUKEwidvuPI9J-UAxXbQ7gEHY1oCToQnPAOegQIERAB', title: 'Câmera 2' },
+  { id: '3', image: 'https://www.google.com/imgres?q=carousel%20card%20css&imgurl=https%3A%2F%2Fwww.codewithrandom.com%2Fwp-content%2Fuploads%2F2022%2F11%2F15-Bootstrap-login-forms49.png&imgrefurl=https%3A%2F%2Fwww.codewithrandom.com%2F2024%2F05%2F06%2Fcarousel-using-css%2F&docid=c2w7S6K1RtWtRM&tbnid=o4Dcn5Xq9C8f2M&vet=12ahUKEwidvuPI9J-UAxXbQ7gEHY1oCToQnPAOegQIEhAB..i&w=1200&h=628&hcb=2&ved=2ahUKEwidvuPI9J-UAxXbQ7gEHY1oCToQnPAOegQIEhAB', title: 'Câmera 3' },
 ];
-
-const PulsingDot = () => {
-  const pulseAnim = useRef(new Animated.Value(1)).current;
-
-  React.useEffect(() => {
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(pulseAnim, {
-          toValue: 1.6,
-          duration: 800,
-          useNativeDriver: true,
-        }),
-        Animated.timing(pulseAnim, {
-          toValue: 1,
-          duration: 800,
-          useNativeDriver: true,
-        }),
-      ])
-    ).start();
-  }, []);
-
-  return (
-    <View style={styles.liveBadgeContainer}>
-      <Animated.View
-        style={[styles.pulseDot, { transform: [{ scale: pulseAnim }] }]}
-      />
-      <View style={styles.liveDot} />
-      <Text style={styles.liveText}>AO VIVO</Text>
-    </View>
-  );
-};
-
-const CarouselCard = ({ item }) => {
-  const isOnline = item.status === 'online';
-
-  return (
-    <View style={styles.carouselItem}>
-      <Image
-        source={{ uri: item.image }}
-        style={styles.carouselImage}
-        resizeMode="cover"
-      />
-
-      {/* Gradiente escuro no topo para o badge */}
-      <View style={styles.topGradient} />
-
-      {/* Gradiente escuro na base para o título */}
-      <View style={styles.bottomGradient} />
-
-      {/* Badge de status no topo */}
-      <View style={styles.topRow}>
-        {isOnline ? (
-          <PulsingDot />
-        ) : (
-          <View style={styles.offlineBadge}>
-            <Ionicons name="wifi-outline" size={12} color="#aaa" />
-            <Text style={styles.offlineText}>OFFLINE</Text>
-          </View>
-        )}
-        <View style={styles.resolutionBadge}>
-          <Text style={styles.resolutionText}>{item.resolution}</Text>
-        </View>
-      </View>
-
-      {/* Informações na base */}
-      <View style={styles.carouselOverlay}>
-        <Text style={styles.carouselTitle}>{item.title}</Text>
-        <View style={styles.locationRow}>
-          <Ionicons name="location-outline" size={13} color="rgba(255,255,255,0.75)" />
-          <Text style={styles.locationText}>{item.location}</Text>
-        </View>
-      </View>
-    </View>
-  );
-};
 
 const CamerasDisponiveis = () => {
   const navigation = useNavigation();
   const [activeIndex, setActiveIndex] = useState(0);
 
+  const renderCamera = ({ item, index }) => (
+    <View style={styles.carouselItem}>
+      <Image source={{ uri: item.image }} style={styles.carouselImage} resizeMode="cover" />
+      <View style={styles.carouselOverlay}>
+        <Text style={styles.carouselTitle}>{item.title}</Text>
+      </View>
+    </View>
+  );
+
   const onScroll = (event) => {
-    const index = Math.round(
-      event.nativeEvent.contentOffset.x / (ITEM_WIDTH + ITEM_SPACING)
-    );
+    const index = Math.round(event.nativeEvent.contentOffset.x / width);
     setActiveIndex(index);
   };
 
   return (
-    <View style={styles.screen}>
-      {/* Header */}
+    <View style={{ flex: 1, backgroundColor: '#f8f9fa' }}>
       <View style={styles.Header}>
         <Image style={styles.logo} source={require('../../../assets/logo2.png')} />
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Ionicons name="caret-back-outline" size={28} color="#202124" />
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Ionicons name="caret-back-outline" size={35} color="#202124" />
         </TouchableOpacity>
       </View>
-
-      {/* Título */}
       <View style={styles.Title}>
-        <View style={styles.titleIconWrapper}>
-          <Ionicons name="videocam" size={20} color="#fff" />
-        </View>
+        <Ionicons name="videocam-outline" size={35} color="#1a73e8" />
         <Text style={styles.TitleText}>Câmeras Disponíveis</Text>
       </View>
-
-      {/* Contador */}
-      <View style={styles.counterRow}>
-        <Text style={styles.counterText}>
-          {activeIndex + 1} de {carouselData.length}
-        </Text>
-        <View style={styles.onlineIndicator}>
-          <View style={styles.onlineDotSmall} />
-          <Text style={styles.onlineCountText}>
-            {carouselData.filter((c) => c.status === 'online').length} online
-          </Text>
+      <View style={styles.carouselContainer}>
+        <FlatList
+          data={carouselData}
+          renderItem={renderCamera}
+          keyExtractor={(item) => item.id}
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          onScroll={onScroll}
+          style={styles.carousel}
+        />
+        <View style={styles.dotsContainer}>
+          {carouselData.map((_, index) => (
+            <View key={index} style={[styles.dot, { backgroundColor: index === activeIndex ? '#1a73e8' : '#dadce0' }]} />
+          ))}
         </View>
-      </View>
-
-      {/* Carousel */}
-      <FlatList
-        data={carouselData}
-        renderItem={({ item }) => <CarouselCard item={item} />}
-        keyExtractor={(item) => item.id}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        snapToInterval={ITEM_WIDTH + ITEM_SPACING}
-        snapToAlignment="start"
-        decelerationRate="fast"
-        contentContainerStyle={styles.flatListContent}
-        onScroll={onScroll}
-        scrollEventThrottle={16}
-      />
-
-      {/* Dots */}
-      <View style={styles.dotsContainer}>
-        {carouselData.map((_, index) => (
-          <View
-            key={index}
-            style={[
-              styles.dot,
-              index === activeIndex ? styles.dotActive : styles.dotInactive,
-            ]}
-          />
-        ))}
       </View>
     </View>
   );
