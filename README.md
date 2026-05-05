@@ -6,5 +6,3 @@ Está faltando a pasta node_modules, por ser muito pesada...
 O Login e Senha são respectivamente user@xample.com e password
 
 Foi implementado esse método de login temporário, e em breve será devidamente construido.
-
-Testando Git Pull
