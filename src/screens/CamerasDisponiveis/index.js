@@ -1,19 +1,10 @@
-import React, { useState, useRef } from 'react';
-import {
-  View,
-  FlatList,
-  Image,
-  Dimensions,
-  Text,
-  TouchableOpacity,
-  Animated,
-} from 'react-native';
+import React, { useState } from 'react';
+import { View, FlatList, Image, Dimensions, Text, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
-import { styles, ITEM_WIDTH, ITEM_SPACING } from './style';
+import { styles } from './style';
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
-
+const { width } = Dimensions.get('window');
 const carouselData = [
   {
     id: '1',
