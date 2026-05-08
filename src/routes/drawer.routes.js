@@ -8,6 +8,7 @@ import Home from '../screens/Home';
 import Cadastro from '../screens/Cadastro';
 import AlertaDetalhe from '../screens/AlertaDetalhe';
 import CamerasDisponiveis from '../screens/CamerasDisponiveis';
+import Perfil from '../screens/Perfil';
 
 const DrawerRoutes = () => {
     const Drawer = createDrawerNavigator();
@@ -30,6 +31,7 @@ const DrawerRoutes = () => {
             <Drawer.Screen name="Cadastro" component={Cadastro} />
             <Drawer.Screen name="CamerasDisponiveis" component={CamerasDisponiveis} />
             <Drawer.Screen name="Login" component={Login} />
+            <Drawer.Screen name="Perfil" component={Perfil} />
         </Drawer.Navigator>
     );
 };

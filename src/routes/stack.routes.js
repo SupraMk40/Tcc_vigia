@@ -7,7 +7,7 @@ import Login from '../screens/Login';
 import Home from '../screens/Home';
 import Cadastro from '../screens/Cadastro';
 import AlertaDetalhe from '../screens/AlertaDetalhe';
-import CamerasDisponiveis from '../screens/CamerasDisponiveis';
+import Perfil from '../screens/Perfil';
 
 const Stack = createNativeStackNavigator();
 
@@ -18,7 +18,7 @@ export default function StackNavigator() {
             <Stack.Screen name="Home" component={DrawerRoutes} />
             <Stack.Screen name="Cadastro" component={Cadastro} />
             <Stack.Screen name="AlertaDetalhe" component={AlertaDetalhe} />
-            <Stack.Screen name="CamerasDisponiveis" component={CamerasDisponiveis} />
+            <Stack.Screen name="Perfil" component={Perfil} />
         </Stack.Navigator>
     );
 }

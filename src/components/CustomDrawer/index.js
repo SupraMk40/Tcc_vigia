@@ -80,8 +80,8 @@ const CustomDrawer = () => {
                             navigation.dispatch(DrawerActions.closeDrawer());
                         }}
                     >
-                        <MaterialIcons style={styles.iconRegistered} name="camera-alt" size={30} color="gray" />
-                        <Text style={styles.PagesText}>Minhas Câmeras</Text>
+                        <MaterialIcons style={styles.iconRegistered} name="account-circle" size={30} color="gray" />
+                        <Text style={styles.PagesText}>Perfil</Text>
                     </TouchableOpacity>
                 </View>
             </ScrollView>
