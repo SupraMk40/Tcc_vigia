@@ -1,1 +1,0 @@
-# TODO: Simplify CamerasDisponiveis\n\n1. ✅ Create TODO.md\n2. Update index.js (2 items, remove dots/state, minimal header)\n3. Update style.js (remove shadows, simplify overlay/fonts/paddings)\n4. attempt_completion
