@@ -18,6 +18,7 @@ const CustomDrawer = () => {
 
             <ScrollView style={styles.container}>
                 <View>
+                    {/* feed */}
                     <TouchableOpacity
                         style={styles.Pages}
                         onPress={() => {
@@ -29,6 +30,43 @@ const CustomDrawer = () => {
                         <Text style={styles.PagesText}>Feed da Comunidade</Text>
                     </TouchableOpacity>
 
+                    {/* mapa */}
+                    <TouchableOpacity
+                        style={styles.Pages}
+                        onPress={() => {
+                            navigation.navigate("Cadastro");
+                            navigation.dispatch(DrawerActions.closeDrawer());
+                        }}
+                    >
+                        <MaterialIcons style={styles.iconRegistered} name="location-on" size={30} color="gray" />
+                        <Text style={styles.PagesText}>Registros na Região</Text>
+                    </TouchableOpacity>
+
+                    {/* chat */}
+                    <TouchableOpacity
+                        style={styles.Pages}
+                        onPress={() => {
+                            navigation.navigate("Cadastro");
+                            navigation.dispatch(DrawerActions.closeDrawer());
+                        }}
+                    >
+                        <MaterialIcons style={styles.iconRegistered} name="group" size={30} color="gray" />
+                        <Text style={styles.PagesText}>Chat da Vizinhança</Text>
+                    </TouchableOpacity>
+
+                    {/* comunidade */}
+                    <TouchableOpacity
+                        style={styles.Pages}
+                        onPress={() => {
+                            navigation.navigate("Home");
+                            navigation.dispatch(DrawerActions.closeDrawer());
+                        }}
+                    >
+                        <MaterialIcons style={styles.iconRegistered} name="people" size={30} color="gray" />
+                        <Text style={styles.PagesText}>Comunidade</Text>
+                    </TouchableOpacity>
+
+                    {/* novo alerta */}
                     <TouchableOpacity
                         style={styles.Pages}
                         onPress={() => {
@@ -51,32 +89,11 @@ const CustomDrawer = () => {
                         <Text style={styles.PagesText}>Câmeras Disponíveis</Text>
                     </TouchableOpacity>
 
+                    {/* perfil */}
                     <TouchableOpacity
                         style={styles.Pages}
                         onPress={() => {
-                            navigation.navigate("Cadastro");
-                            navigation.dispatch(DrawerActions.closeDrawer());
-                        }}
-                    >
-                        <MaterialIcons style={styles.iconRegistered} name="location-on" size={30} color="gray" />
-                        <Text style={styles.PagesText}>Registros na Região</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                        style={styles.Pages}
-                        onPress={() => {
-                            navigation.navigate("Cadastro");
-                            navigation.dispatch(DrawerActions.closeDrawer());
-                        }}
-                    >
-                        <MaterialIcons style={styles.iconRegistered} name="group" size={30} color="gray" />
-                        <Text style={styles.PagesText}>Chat da Vizinhança</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                        style={styles.Pages}
-                        onPress={() => {
-                            navigation.navigate("Cadastro");
+                            navigation.navigate("Perfil");
                             navigation.dispatch(DrawerActions.closeDrawer());
                         }}
                     >
@@ -100,4 +117,3 @@ const CustomDrawer = () => {
 };
 
 export default CustomDrawer;
-

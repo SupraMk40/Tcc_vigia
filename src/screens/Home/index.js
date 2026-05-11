@@ -27,7 +27,6 @@ export default function Home() {
     const isFocused = useIsFocused();
 
     const [dados, setDados] = useState([]);
-    const [total, setTotal] = useState({});
     const [isLoading, setIsLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
 

@@ -1,49 +1,37 @@
 <?php
- header('Access-Control-Allow-Origin: *');
- header('Content-type: application/json');
+header('Access-Control-Allow-Origin: *');
+header('Content-type: application/json; charset=utf-8');
 
-header('Access-Control-Allow-Credentials: true');
-header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With'); 
-header('Content-Type: application/json; charset=utf-8');  
+// Pasta onde os arquivos serão salvos (criar se não existir)
+$uploadDir = __DIR__ . '/img/';
+if (!is_dir($uploadDir)) {
+    mkdir($uploadDir, 0755, true);
+}
++
+// Determina a URL base dinamicamente
+$scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+$host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+$scriptPath = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\');
+$baseUrl = $scheme . '://' . $host . $scriptPath;
 
-  $dbhost = "localhost";
-  $dbuser = "root";
-  $dbpass = "";
-  $db = "image_upload";
-  
-  $conn = new mysqli($dbhost, $dbuser, $dbpass,$db) or die("Connect failed: %sn". $conn -> error);
-  
-  if (!$conn) {
-      die("Connection failed: " . mysqli_connect_error());
-  }
-  
+if (!empty($_FILES['photo'])) {
+    $photo_name = $_FILES['photo']['name'];
+    $tmp_name = $_FILES['photo']['tmp_name'];
 
-  if($_FILES['photo'])
-  {
-      $photo_name = $_FILES["photo"]["name"];
-      $photo_tmp_name = $_FILES["photo"]["tmp_name"];
-
-     
-          //MOVE FILE TO SERVER
-          $random_name = rand(1000,1000000)."-".$photo_name;
-          $upload_name = "http://localhost:81/PAMII/imagem/".$random_name; 
-          $upload_name = preg_replace('/s+/', '-', $upload_name);
-
-          if(move_uploaded_file($_FILES["photo"]["tmp_name"],"img/" .$_FILES["photo"]["name"])) {
-              //file uploaded to server
-              $sql = "INSERT INTO images(image,image_text) VALUES ( '$photo_name', '$upload_name' )";
-
-            
-              
-              mysqli_query($conn,$sql);
-          }
-         
-
-
-      
-
-  }
-
-
+    $ext = pathinfo($photo_name, PATHINFO_EXTENSION);
+    $safeName = preg_replace('/[^A-Za-z0-9\-_\.]/', '-', pathinfo($photo_name, PATHINFO_FILENAME));
+    $random_name = rand(1000, 1000000) . '-' . $safeName . '.' . $ext;
++
+    $target = $uploadDir . $random_name;
++
+    if (move_uploaded_file($tmp_name, $target)) {
+        $url = $baseUrl . '/img/' . rawurlencode($random_name);
++        echo json_encode(['success' => true, 'url' => $url, 'file' => $random_name]);
+    } else {
++        echo json_encode(['success' => false, 'mensagem' => 'Erro ao mover arquivo']);
+    }
+} else {
++    echo json_encode(['success' => false, 'mensagem' => 'Nenhum arquivo enviado']);
+}
++
 ?>

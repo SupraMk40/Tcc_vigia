@@ -1,23 +1,15 @@
-<?php 
+<?php
+include_once(__DIR__ . '/conexao.php');
 
-include_once('conexao.php');
+try {
+    $query = $pdo->query('SELECT COUNT(*) as total FROM alertas');
+    $res = $query->fetch();
+    $total = intval($res['total'] ?? 0);
 
-$postjson = json_decode(file_get_contents('php://input'), true);
+    echo json_encode(['success' => true, 'total_usuarios' => $total]);
+} catch (Exception $e) {
++    echo json_encode(['success' => false, 'mensagem' => 'Erro ao contar registros', 'erro' => $e->getMessage()]);
+}
 
-$id_usu = @$_GET['user'];
-
-$total_usuarios = 0;
-
-$query = $pdo->query("SELECT * from turismo ");
-$res = $query->fetchAll(PDO::FETCH_ASSOC);
-$total_usuarios = @count($res);
-
-
-$result = json_encode(array('success'=>true, 
-    'total_usuarios'=>$total_usuarios
-        
-));
-
-echo $result;
 
 ?>

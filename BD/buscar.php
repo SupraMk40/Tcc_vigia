@@ -1,37 +1,32 @@
-<?php 
-
-include_once('conexao.php');
-
-$postjson = json_decode(file_get_contents('php://input'), true);
-
-
-$query = $pdo->prepare("SELECT * from turismo");
-
-$query->execute();
-
-$res = $query->fetchAll(PDO::FETCH_ASSOC);
-
-for ($i=0; $i < count($res); $i++) { 
-    foreach ($res[$i] as $key => $value) {  }      
-
-    $dados[] = array(
-        'id' => $res[$i]['id'],
-        'cidade' => $res[$i]['cidade'],
-        'estado' => $res[$i]['estado'],      
-       
-                         
-    );
-
-    }
-
-   if(count($res) > 0){
-           $result = json_encode(array('success'=>true, 'result'=>$dados));
-
-       }else{
-           $result = json_encode(array('success'=>false, 'result'=>'0'));
-
-       }
-
 echo $result;
+<?php
+include_once(__DIR__ . '/conexao.php');
+
+try {
+    $query = $pdo->prepare("SELECT * FROM alertas ORDER BY criado_em DESC");
+    $query->execute();
+    $res = $query->fetchAll();
+
+    $dados = [];
+    foreach ($res as $row) {
+        $dados[] = [
+            'id' => $row['id'],
+            'titulo' => $row['titulo'],
+            'descricao' => $row['descricao'],
+            'categoria' => $row['categoria'],
+            'urgencia' => $row['urgencia'],
+            'localizacao' => $row['localizacao'],
+            'criado_em' => $row['criado_em'] ?? null,
+        ];
+    }
++
+    if (count($dados) > 0) {
+        echo json_encode(['success' => true, 'result' => $dados], JSON_UNESCAPED_UNICODE);
+    } else {
+        echo json_encode(['success' => false, 'result' => []]);
+    }
+} catch (Exception $e) {
+    echo json_encode(['success' => false, 'mensagem' => 'Erro ao buscar', 'erro' => $e->getMessage()]);
+}
 
 ?>

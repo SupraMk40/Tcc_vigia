@@ -1,32 +1,22 @@
-<?php 
+<?php
+include_once(__DIR__ . '/conexao.php');
 
-include_once('conexao.php');
+$id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
-$id = $_GET['id'];
+try {
+    $stmt = $pdo->prepare('SELECT * FROM alertas WHERE id = :id LIMIT 1');
+    $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+    $stmt->execute();
+    $row = $stmt->fetch();
 
-$query = $pdo->query("SELECT * from turismo where id = '$id'");
-
- $res = $query->fetchAll(PDO::FETCH_ASSOC);
-
- 	for ($i=0; $i < count($res); $i++) { 
-      foreach ($res[$i] as $key => $value) {
-      }
- 		
-    $id = $res[$i]['id'];
-    $cidade = $res[$i]['cidade'];
-    $estado = $res[$i]['estado'];
-    $transporte = $res[$i]['transporte'];
-
-
- 		}
-
-        if(count($res) > 0){
-                $result = json_encode(array('success'=>true, 'id'=>$id, 'cidade'=>$cidade, 'estado'=>$estado, 'transporte'=>$transporte));
-
-            }else{
-                $result = json_encode(array('success'=>false, 'result'=>'0'));
-
-            }
-            echo $result;
+    if ($row) {
+        echo json_encode(array_merge(['success' => true], $row), JSON_UNESCAPED_UNICODE);
+    } else {
+        echo json_encode(['success' => false, 'result' => null]);
+    }
+} catch (Exception $e) {
+    echo json_encode(['success' => false, 'mensagem' => 'Erro na consulta', 'erro' => $e->getMessage()]);
+}
++
 
  ?>

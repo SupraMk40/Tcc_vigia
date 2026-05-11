@@ -1,21 +1,18 @@
-<?php 
+<?php
+include_once(__DIR__ . '/conexao.php');
 
-include_once('conexao.php');
+$id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
-$id = $_GET['id'];
+try {
+    $stmt = $pdo->prepare('DELETE FROM alertas WHERE id = :id');
+    $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+    $ok = $stmt->execute();
++
+    echo json_encode(['success' => $ok]);
+} catch (Exception $e) {
++    echo json_encode(['success' => false, 'mensagem' => 'Erro ao excluir', 'erro' => $e->getMessage()]);
+}
 
-$query = $pdo->query("DELETE from turismo where id = '$id'");
-
- 
-
-        if($query){
-                $result = json_encode(array('success'=>true));
-
-            }else{
-                $result = json_encode(array('success'=>false));
-
-            }
-            echo $result;
 
  ?>
 
