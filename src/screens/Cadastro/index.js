@@ -3,7 +3,7 @@ import { ScrollView, Alert, Text, TextInput, View, TouchableOpacity, Image, Styl
 import { useNavigation } from '@react-navigation/core';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
-import { styles } from './style';
+import { styles } from './styles';
 import { showMessage } from "react-native-flash-message";
 import api from '../../../services/api';
 import { useRoute } from '@react-navigation/native';
@@ -204,7 +204,7 @@ const Cadastro = () => {
         <View style={{ flex: 1, marginTop: 0, backgroundColor: '#f8f9fa' }}>
             <View style={styles.Header}>
                 <Image style={styles.logo} source={require('../../../assets/logo2.png')} />
-                <TouchableOpacity onPress={() => navigation.navigate("Home")}>
+                <TouchableOpacity onPress={() => navigation.openDrawer()}>
                     <Ionicons style={{ marginLeft: 5, marginRight: 5 }} name="caret-back-outline" size={35} color="#202124" />
                 </TouchableOpacity>
             </View>
@@ -311,3 +311,4 @@ const Cadastro = () => {
 };
 
 export default Cadastro;
+

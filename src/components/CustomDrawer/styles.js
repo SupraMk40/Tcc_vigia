@@ -1,53 +1,68 @@
 import { StyleSheet } from "react-native";
-import fonts from "../../styles/fonts";
 
 export const styles = StyleSheet.create({
     container:{
         flex: 1,
-        padding: 10,
-        
+        paddingVertical: 10,
+        backgroundColor: '#fff',
+    },
+
+    header:{
+        padding: 20,
+        backgroundColor: '#0088cc',
+        borderBottomLeftRadius: 20,
+        borderBottomRightRadius: 20,
+        marginBottom: 10,
+    },
+
+    headerText:{
+        color: '#fff',
+        fontSize: 18,
+        fontWeight: '600',
     },
 
     Pages:{
         flexDirection: 'row',
-        marginTop: 15,
+        alignItems: 'center',
+        paddingVertical: 14,
+        paddingHorizontal: 18,
+        borderRadius: 12,
+        marginHorizontal: 10,
+        marginTop: 6,
+    },
+
+    PagesText:{
+        fontSize: 16,
+        color: '#222',
+        marginLeft: 15,
+        fontWeight: '500',
+    },
+
+    itemActive:{
+        backgroundColor: '#e3f2fd',
     },
 
     Sair:{
         flexDirection: 'row',
-        marginTop: 15,
-        marginBottom: 15,
-    },
-
-    iconRegistered:{
-        justifyContent: 'center',
-        alignSelf: 'center',
-    },
-
-    PagesText:{
-        fontFamily: fonts.text,
-        fontSize: 18,
-        color: '#000',
-        alignSelf: "center",
-        marginLeft: 10,
+        alignItems: 'center',
+        paddingVertical: 14,
+        paddingHorizontal: 18,
+        borderRadius: 12,
+        marginHorizontal: 10,
     },
 
     SairText:{
-        fontFamily: fonts.text,
-        fontSize: 18,
-        color: '#000',
-        alignSelf: "center",
-        marginLeft: 20,
+        fontSize: 16,
+        color: '#e53935',
+        marginLeft: 15,
+        fontWeight: '500',
     },
 
+    /*FOOTER*/
     footer:{
-        padding: 10,
+        borderTopWidth: 1,
+        borderTopColor: '#eee',
+        paddingTop: 10,
+        marginBottom: 10,
     },
-
-    logo:{
-        width: 135,
-        height: 50,
-        alignSelf: "center",
-        marginTop: 10,
-    },
-})
+});

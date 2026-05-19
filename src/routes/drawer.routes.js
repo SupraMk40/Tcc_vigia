@@ -3,12 +3,14 @@ import { StyleSheet } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import CustomDrawer from '../components/CustomDrawer';
 
-import Login from '../screens/Login';
 import Home from '../screens/Home';
+import Mapa from '../screens/Mapa';
+import Alertas from '../screens/Alertas';
 import Cadastro from '../screens/Cadastro';
-import AlertaDetalhe from '../screens/AlertaDetalhe';
-import CamerasDisponiveis from '../screens/CamerasDisponiveis';
-import Perfil from '../screens/Perfil';
+import Chat from '../screens/Chat';
+import Comunidade from '../screens/Comunidade';
+import Cameras from '../screens/Cameras';
+import Botao from '../screens/Botao';
 
 const DrawerRoutes = () => {
     const Drawer = createDrawerNavigator();
@@ -16,7 +18,7 @@ const DrawerRoutes = () => {
     return (
         <Drawer.Navigator
             screenOptions={{
-                headerShown: false,
+                headerShown: true,
                 drawerStyle: {
                     width: 250,
                     height: '100%',
@@ -25,14 +27,18 @@ const DrawerRoutes = () => {
                     zIndex: 11,
                 }
             }}
-            drawerContent={props => <CustomDrawer />}
+            drawerContent={(props) => <CustomDrawer {...props} />}
         >
             <Drawer.Screen name="Home" component={Home} />
+            <Drawer.Screen name="Mapa" component={Mapa} />
+            <Drawer.Screen name="Alertas" component={Alertas} />
             <Drawer.Screen name="Cadastro" component={Cadastro} />
-            <Drawer.Screen name="CamerasDisponiveis" component={CamerasDisponiveis} />
-            <Drawer.Screen name="Login" component={Login} />
-            <Drawer.Screen name="Perfil" component={Perfil} />
+            <Drawer.Screen name="Chat" component={Chat} />
+            <Drawer.Screen name="Comunidade" component={Comunidade} />
+             <Drawer.Screen name="Botao" component={Botao} />
+            <Drawer.Screen name="Cameras" component={Cameras} />
         </Drawer.Navigator>
+        
     );
 };
 
