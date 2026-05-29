@@ -7,8 +7,11 @@ import {
   ActivityIndicator,
   Image
 } from 'react-native';
+import api from '../../../services/api';
 import { styles } from './styles';
 import { useNavigation } from '@react-navigation/native';
+
+// usa um api compartilhado (axios) assim como outras telas (ex: Perfil)
 
 export default function Login() {
   const navigation = useNavigation();
@@ -25,7 +28,7 @@ export default function Login() {
     if (error) setError('');
   }, [email, password]);
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     setError('');
 
     if (!isValid) {
@@ -33,17 +36,32 @@ export default function Login() {
       return;
     }
 
+    // bypass para login de teste
+    const bypassEmail = 'user@example.com';
+    const bypassPassword = 'password';
+    if (email.trim().toLowerCase() === bypassEmail && password === bypassPassword) {
+      navigation.replace('App');
+      return;
+    }
+
     setLoading(true);
+    try {
+      const res = await api.post('http://localhost:8081/TCC_BD/auth.php', {
+        action: 'login',
+        email,
+        password,
+      });
 
-    setTimeout(() => {
-      setLoading(false);
-
-      if (email === 'user@example.com' && password === 'password') {
+      if (res.data?.success) {
         navigation.replace('App');
       } else {
-        setError('Credenciais inválidas.');
+        setError(res.data?.mensagem || 'Credenciais inválidas.');
       }
-    }, 1200);
+    } catch (e) {
+      setError('Erro de conexão com o servidor.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -63,19 +81,27 @@ export default function Login() {
       {/*EMAIL*/}
       <Text style={styles.label}>E-mail</Text>
       <TextInput
+        testID="login-email"
+        accessibilityLabel="login-email"
         placeholder="Digite seu e-mail"
         value={email}
         onChangeText={setEmail}
+        autoCapitalize="none"
+        keyboardType="email-address"
+        autoCorrect={false}
         style={styles.input}
       />
 
       {/*SENHA*/}
       <Text style={styles.label}>Senha</Text>
       <TextInput
+        testID="login-password"
+        accessibilityLabel="login-password"
         placeholder="Digite sua senha"
         value={password}
         onChangeText={setPassword}
         secureTextEntry
+        autoCorrect={false}
         style={styles.input}
       />
 

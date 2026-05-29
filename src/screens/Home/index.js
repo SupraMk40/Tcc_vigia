@@ -1,3 +1,13 @@
+// Querido programador:
+
+// Quando eu escrevi este código, apenas Deus e eu sabíamos como ele funcionava.
+// Agora, apenas Deus sabe!
+
+// Portanto, se você estiver tentando melhorar esta lógica porque está falhando e "com certeza está",
+// por favor, aumente este contador como um aviso para a próxima pessoa
+
+// total_horas_gastas_aqui: 54
+
 import React, { useState } from 'react';
 import {
   View,

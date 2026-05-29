@@ -3,7 +3,8 @@ import { View, Text, TouchableOpacity, TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import styles from './styles';
 
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { ScrollView } from 'react-native-web';
 
 export default function Forms() {
   const navigation = useNavigation();
@@ -20,11 +21,16 @@ export default function Forms() {
     { label: 'Emergência Médica', icon: 'medical-bag' },
     { label: 'Violência Urbana', icon: 'account-alert' },
   ];
-
+  
   return (
-    <View style={styles.container}>
+    <ScrollView>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Ionicons name="arrow-back" size={24} />
+        </TouchableOpacity>
 
-      <Text style={styles.titulo}>Tipos de Emergência</Text>
+        <Text style={styles.titulo}>Tipos de Emergência</Text>
+
 
       <View style={styles.grid}>
         {opcoes.map((item, index) => (
@@ -67,22 +73,22 @@ export default function Forms() {
       <View style={styles.row}>
         <TouchableOpacity
           style={[
-            styles.btnSimNao,
-            perigo === true && styles.btnAtivoSim
+            styles.btnPerigo,
+            perigo === true && styles.btnPerigoAtivo
           ]}
           onPress={() => setPerigo(true)}
         >
-          <Text style={styles.textSim}>Sim, preciso de ajuda</Text>
+          <Text style={styles.btnPerigoTexto}>Sim, preciso de ajuda</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={[
-            styles.btnSimNao,
-            perigo === false && styles.btnAtivoNao
+            styles.btnPerigo,
+            perigo === false && styles.btnNaoAtivo
           ]}
           onPress={() => setPerigo(false)}
         >
-          <Text>Não, estou seguro</Text>
+          <Text style={styles.btnPerigoTexto}>Não, estou seguro</Text>
         </TouchableOpacity>
       </View>
 
@@ -101,5 +107,6 @@ export default function Forms() {
       </TouchableOpacity>
 
     </View>
+    </ScrollView>
   );
 }

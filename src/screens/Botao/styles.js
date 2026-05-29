@@ -89,6 +89,12 @@ export default StyleSheet.create({
     borderColor: '#D1D5DB',
   },
 
+  btnPerigoTexto: {
+    color: '#111827',
+    fontWeight: '700',
+    fontSize: 14,
+  },
+
   localBox: {
     backgroundColor: '#fff',
     padding: 12,
