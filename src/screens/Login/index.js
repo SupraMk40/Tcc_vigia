@@ -17,16 +17,16 @@ export default function Login() {
   const navigation = useNavigation();
 
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [senha, setSenha] = useState('');
   const [isValid, setIsValid] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    const valid = email.includes('@') && password.trim().length >= 6;
+    const valid = email.includes('@') && senha.trim().length >= 6;
     setIsValid(valid);
     if (error) setError('');
-  }, [email, password]);
+  }, [email, senha]);
 
   const handleLogin = async () => {
     setError('');
@@ -36,20 +36,20 @@ export default function Login() {
       return;
     }
 
-    // bypass para login de teste
+    // // bypass para login de teste
     const bypassEmail = 'user@example.com';
-    const bypassPassword = 'password';
-    if (email.trim().toLowerCase() === bypassEmail && password === bypassPassword) {
+    const bypassSenha = 'password';
+    if (email.trim().toLowerCase() === bypassEmail && senha === bypassSenha) {
       navigation.replace('App');
       return;
     }
 
     setLoading(true);
     try {
-      const res = await api.post('http://localhost:8081/TCC_BD/auth.php', {
+      const res = await api.post('http://localhost:8081/C:/xampp/htdocs/TCC_BD/logar.php', {
         action: 'login',
         email,
-        password,
+        senha,
       });
 
       if (res.data?.success) {
@@ -95,11 +95,11 @@ export default function Login() {
       {/*SENHA*/}
       <Text style={styles.label}>Senha</Text>
       <TextInput
-        testID="login-password"
-        accessibilityLabel="login-password"
+        testID="login-senha"
+        accessibilityLabel="login-senha"
         placeholder="Digite sua senha"
-        value={password}
-        onChangeText={setPassword}
+        value={senha}
+        onChangeText={setSenha}
         secureTextEntry
         autoCorrect={false}
         style={styles.input}
